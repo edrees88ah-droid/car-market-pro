@@ -65,6 +65,16 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`🚀 The Server is Running  🚀❤️🔥 السيرفر يعمل الآن على البورت: ${PORT}`);
-});
+// ... نهاية الأكواد السابقة ...
+
+// ✅ التعديل المهم لـ Vercel
+const PORT = process.env.PORT || 5000;
+
+// لا تقم بحذف app.listen ولكن تأكد أن الملف يصدّر app
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`🚀 السيرفر يعمل على البورت: ${PORT}`);
+    });
+}
+
+export default app; // 👈 هذا السطر هو الأهم لكي يفهم Vercel كيف يشغل السيرفر
