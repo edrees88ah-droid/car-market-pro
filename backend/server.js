@@ -1,79 +1,40 @@
-// 1. إعدادات البيئة والأمان الأساسية
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // لتجاوز مشاكل SSL مع Aiven
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
-import xss from 'xss-clean';
+import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
 
-// تحميل متغيرات البيئة من ملف .env
-dotenv.config();
-
-// 2. استيراد الروابط (تأكد من وجود الامتداد .js)
-import carRoutes from './routes/cars.js';
+// 🚨 هام جداً: تأكد من إضافة .js في نهاية كل ملف محلي
+import pool from './db.js'; 
 import authRoutes from './routes/auth.js';
+import carRoutes from './routes/cars.js';
 import adminRoutes from './routes/admin.js';
 import notificationRoutes from './routes/notifications.js';
-import pool from './db.js';
 
+dotenv.config();
+
+const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
-
-// 3. اختبار قاعدة البيانات (يظهر في Logs الخاصة بـ Vercel)
-pool.query('SELECT NOW()', (err, res) => {
-    if (err) {
-        console.error('❌ خطأ في الاتصال بقاعدة البيانات السحابية:', err.message);
-    } else {
-        console.log('✅ قاعدة البيانات السحابية متصلة وجاهزة للعمل 🐘💯');
-    }
-});
-
-// 4. إعدادات الحماية والـ CORS
-// ملاحظة: origin: '*' تسمح للفرونت إند بالاتصال من أي مكان في المرحلة التجريبية
-app.use(cors({ origin: '*' }));
-app.use(helmet({ 
-    contentSecurityPolicy: false, // لضمان عدم حظر عرض الصور
-    crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
-app.use(xss());
-
-// 5. تحليل البيانات (Body Parser)
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// 6. الملفات الثابتة (الصور المرفوعة مع الكود)
+app.use(cors());
+app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// 7. تفعيل الروابط (Routes)
+// الروابط
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// 8. مسارات تجريبية للتأكد من عمل السيرفر بعد الرفع
-app.get('/', (req, res) => res.send('🚗 سيرفر سوق السيارات يعمل بنجاح على Vercel!'));
-app.get('/api/test-server', (req, res) => res.send("السيرفر السحابي يراك والمسار سليم!"));
+app.get('/', (req, res) => res.send('🚗 السيرفر يعمل بنجاح على Vercel!'));
 
-// 9. معالجة الروابط غير الموجودة (404)
-app.use((req, res) => {
-    console.log(`⚠️ طلب مسار غير موجود: ${req.originalUrl}`);
-    res.status(404).json({ error: "عذراً.. هذا المسار غير موجود في السيرفر" });
-});
-
-// 10. إعدادات التشغيل لـ Vercel
-const PORT = process.env.PORT || 5000;
-
-// يعمل Listen فقط في جهازك المحلي، أما Vercel فيستخدم التصدير تلقائياً
+// 🚨 تعديل هام لـ Vercel: لا تشغل app.listen إلا في بيئة التطوير المحلية
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`🚀 السيرفر يعمل محلياً على البورت: ${PORT}`);
-    });
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`🚀 Server on port ${PORT}`));
 }
 
-// ✅ التصدير ضروري لـ Vercel
+// ✅ هذا هو السطر الذي يحتاجه Vercel لكي لا ينهار
 export default app;
