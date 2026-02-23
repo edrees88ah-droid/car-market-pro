@@ -2,33 +2,22 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import dotenv from 'dotenv';
 
-// تفعيل قراءة ملفات الأسرار
 dotenv.config();
 
-/**
- * إعداد حوض الاتصال (Connection Pool) 
- * مصمم ليعمل بكفاءة على Vercel بدون أخطاء SSL
- */
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    // هذا هو السطر الأهم لتجاوز خطأ الشهادة في Aiven السحابية
-    rejectUnauthorized: false, 
-  },
-  // إعدادات احترافية لضمان عدم تعليق السيرفر
-  max: 10,               // أقصى عدد اتصالات متزامنة
-  idleTimeoutMillis: 30000, // وقت إغلاق الاتصال غير المستخدم
-  connectionTimeoutMillis: 5000, // وقت انتظار الاتصال قبل إظهار خطأ
+    rejectUnauthorized: false // ده اللي بيخلي Aiven يقبل اتصال Vercel و VS Code
+  }
 });
 
-// مراقبة نجاح الاتصال في سجلات Vercel
-pool.on('connect', () => {
-  console.log('✅ [Database] تم الاتصال بنجاح بقاعدة البيانات السحابية');
-});
-
-// مراقبة الأخطاء المفاجئة لكي لا ينهار السيرفر (500 Error)
-pool.on('error', (err) => {
-  console.error('⚠️ [Database Error] خطأ مفاجئ في القاعدة:', err.message);
+// اختبار الاتصال مع طباعة الخطأ لو حصل
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('❌ خطأ في الاتصال بالقاعدة:', err.message);
+  } else {
+    console.log('✅✅✅ السيرفر اتصل بنجاح بقاعدة البيانات السحابية');
+  }
 });
 
 export default pool;
