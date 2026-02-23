@@ -15,7 +15,7 @@ import adminRoutes from './routes/admin.js';
 import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
-
+console.log("🔗 رابط القاعدة في السيرفر هو:", process.env.DATABASE_URL ? "✅ موجود" : "❌ غير موجود");
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,3 +52,4 @@ app.get('/', (req, res) => {
 
 // ✅ تصدير التطبيق لـ Vercel (أهم سطر)
 export default app;
+
