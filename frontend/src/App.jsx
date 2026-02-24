@@ -7,8 +7,7 @@ import {
 } from 'lucide-react';
 // في أعلى الملف تحت الـ imports مباشرة
 const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
-// عند طلب التسجيل مثلاً:
-const res = await axios.post(`${apiBase}/api/auth/register`, formData);
+
 // استيراد مكونات الخريطة
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
