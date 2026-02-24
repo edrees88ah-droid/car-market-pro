@@ -7,14 +7,22 @@ import verifyToken from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 // --- 1. إعداد تخزين الصور (Multer) ---
-const storage = multer.diskStorage({
-    destination: 'uploads/',
-    filename: (req, file, cb) => {
+//const storage = multer.diskStorage({
+   // destination: 'uploads/',
+   // filename: (req, file, cb) => {
         // توليد اسم فريد لكل صورة لمنع التداخل
-        cb(null, Date.now() + "-" + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
+       // cb(null, Date.now() + "-" + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
+   // }
+//});
+// backend/routes/cars.js
+
+const storage = multer.diskStorage({
+    // التعديل السحري هنا: استخدم المجلد المؤقت الخاص بـ Vercel
+    destination: '/tmp', 
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-" + path.extname(file.originalname));
     }
 });
-
 const upload = multer({ 
     storage, 
     limits: { fileSize: 2 * 1024 * 1024 } // حد 2 ميجا لكل صورة
@@ -159,5 +167,6 @@ router.delete('/delete/:id', verifyToken, async (req, res) => {
         res.json({ message: "تم حذف الإعلان بنجاح 🗑️" });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
+
 
 export default router;
