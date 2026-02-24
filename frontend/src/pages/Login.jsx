@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Mail, Lock, Loader2 } from 'lucide-react';
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +15,7 @@ const Login = () => {
     try {
       // 1. إرسال طلب تسجيل الدخول للسيرفر
       //const res = await axios.post('http://127.0.0.1:5000/api/auth/login', { email, password });
+      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const res = await axios.post(`${apiBase}/api/auth/login`, formData);
       // 2. حفظ التوكن وبيانات المستخدم في ذاكرة المتصفح
       localStorage.setItem('token', res.data.token);
@@ -97,3 +97,4 @@ const Login = () => {
 };
 
 export default Login;
+
