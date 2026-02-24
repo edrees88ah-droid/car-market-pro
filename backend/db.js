@@ -9,7 +9,7 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false // ده اللي بيخلي Aiven يقبل اتصال Vercel و VS Code
   },
-  / إعدادات لضمان عدم تعليق السيرفر في بيئة Vercel
+  // إعدادات لضمان عدم تعليق السيرفر في بيئة Vercel
   connectionTimeoutMillis: 5000, 
   idleTimeoutMillis: 30000,
   max: 10
@@ -25,4 +25,5 @@ pool.query('SELECT NOW()', (err, res) => {
 });
 
 export default pool;
+
 
