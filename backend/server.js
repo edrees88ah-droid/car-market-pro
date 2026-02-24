@@ -36,8 +36,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // الملفات الثابتة
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+//app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// بدلاً من السطر القديم لـ app.use('/uploads'...)
+// استخدم هذا السطر الذي يفهم بيئة Vercel
+app.use('/uploads', express.static('/tmp'));
 // 🚀 الروابط (Routes)
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
@@ -51,6 +53,7 @@ app.get('/', (req, res) => {
 
 // ✅ تصدير التطبيق لـ Vercel (أهم سطر)
 export default app;
+
 
 
 
