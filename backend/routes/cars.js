@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import pool from '../db.js';
 import verifyToken from '../middleware/authMiddleware.js';
-
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const router = express.Router();
 
 // --- 1. إعداد تخزين الصور (Multer) ---
@@ -170,3 +170,4 @@ router.delete('/delete/:id', verifyToken, async (req, res) => {
 
 
 export default router;
+
