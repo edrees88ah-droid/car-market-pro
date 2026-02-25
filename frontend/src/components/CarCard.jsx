@@ -5,7 +5,7 @@ import { Car, Gauge, Calendar, ArrowLeft, CheckCircle2, Eye } from 'lucide-react
 const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const CarCard = ({ car }) => {
   // 1. توحيد القاعدة الأساسية للرابط (بدون ميلة في الآخر لتجنب التكرار)
-  const apiBase = "${apiBase}:";  
+  const apiBase = '${apiBase}:';  
 
   const isSold = car.status === 'sold';
 
@@ -86,3 +86,4 @@ const CarCard = ({ car }) => {
 
 
 export default CarCard;
+
