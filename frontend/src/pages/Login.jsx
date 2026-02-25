@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Mail, Lock, Loader2 } from 'lucide-react';
-
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -97,4 +97,5 @@ const Login = () => {
 };
 
 export default Login;
+
 
