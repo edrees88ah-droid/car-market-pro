@@ -15,7 +15,7 @@ const Login = () => {
     try {
       // 1. إرسال طلب تسجيل الدخول للسيرفر
       const res = await axios.post('${apiBase}/api/auth/login', { email, password });
-      const res = await axios.post(`${apiBase}/api/auth/login`, formData);
+      //const res = await axios.post(`${apiBase}/api/auth/login`, formData);
       // 2. حفظ التوكن وبيانات المستخدم في ذاكرة المتصفح
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -96,6 +96,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 
