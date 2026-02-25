@@ -2,7 +2,6 @@ import express from 'express';
 import pool from '../db.js';
 import verifyToken from '../middleware/authMiddleware.js'; 
 import sendEmail from '../utils/sendEmail.js';
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const router = express.Router();
 
 // 🛡️ حارس التأكد من الإدارة (المحرك الداخلي)
@@ -110,3 +109,4 @@ router.patch('/verify-payment/:id', verifyToken, isAdmin, async (req, res) => {
 
 
 export default router;
+
