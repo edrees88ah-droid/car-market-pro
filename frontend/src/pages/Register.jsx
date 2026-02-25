@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, Mail, Lock, Phone, User } from 'lucide-react';
 const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const res = await axios.post(`${apiBase}/api/auth/login`, formData);
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
   const navigate = useNavigate();
@@ -67,3 +66,4 @@ const Register = () => {
 
 
 export default Register;
+
