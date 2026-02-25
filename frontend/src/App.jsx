@@ -110,7 +110,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user'));
-  const apiBase = "${apiBase}";
+  const apiBase = '${apiBase}';
 
   // دالة جلب العدادات بشكل موحد ✅
   const fetchCounts = async () => {
