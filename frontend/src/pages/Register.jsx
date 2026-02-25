@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, Mail, Lock, Phone, User } from 'lucide-react';
-
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const res = await axios.post(`${apiBase}/api/auth/login`, formData);
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://127.0.0.1:5000/api/auth/register', formData);
+      await axios.post('${apiBase}/api/auth/register', formData);
       alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
       navigate('/login');
     } catch (err) {
@@ -63,5 +64,6 @@ const Register = () => {
     </div>
   );
 };
+
 
 export default Register;
