@@ -39,8 +39,7 @@ const getCurrencyName = (code) => {
 // --- 🏠 مكون الصفحة الرئيسية (المعرض العام) ---
 const Home = ({ cars, loading }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  //const apiBase = "http://localhost:5000";
-const apiBase = import.meta.env.VITE_API_URL;
+  const apiBase = "${apiBase}";
   const filteredCars = cars.filter(car => 
     car.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     car.model?.toLowerCase().includes(searchTerm.toLowerCase())
