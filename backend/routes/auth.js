@@ -3,7 +3,6 @@ import pool from '../db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000"
 dotenv.config();
 const router = express.Router();
 // ✅ السطر المحدث: الآن الكود يقرأ المفتاح من ملف .env المخفي
@@ -54,3 +53,4 @@ router.post('/login', async (req, res) => {
 
 
 export default router;
+
