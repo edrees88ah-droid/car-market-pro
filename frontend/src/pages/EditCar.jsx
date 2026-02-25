@@ -10,7 +10,7 @@ const EditCar = () => {
         brand: '', model: '', price: '', year: '', mileage: '', description: ''
     });
     const [loading, setLoading] = useState(true);
-    const apiBase = "${apiBase}";
+    const apiBase = '${apiBase}';
     useEffect(() => {
         // جلب البيانات الحالية للسيارة
         const fetchCar = async () => {
@@ -74,3 +74,4 @@ const EditCar = () => {
 
 
 export default EditCar;
+
