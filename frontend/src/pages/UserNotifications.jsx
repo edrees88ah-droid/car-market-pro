@@ -6,7 +6,7 @@ const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const UserNotifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
-    const apiBase = "${apiBase}";
+    const apiBase = '${apiBase}';
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -97,3 +97,4 @@ const UserNotifications = () => {
 
 
 export default UserNotifications;
+
