@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Save, ArrowRight, Loader2 } from 'lucide-react';
-
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const EditCar = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -10,9 +10,7 @@ const EditCar = () => {
         brand: '', model: '', price: '', year: '', mileage: '', description: ''
     });
     const [loading, setLoading] = useState(true);
-    //const apiBase = "http://localhost:5000";
-    const apiBase = import.meta.env.VITE_API_URL;
-
+    const apiBase = "${apiBase}";
     useEffect(() => {
         // جلب البيانات الحالية للسيارة
         const fetchCar = async () => {
@@ -73,5 +71,6 @@ const EditCar = () => {
         </div>
     );
 };
+
 
 export default EditCar;
