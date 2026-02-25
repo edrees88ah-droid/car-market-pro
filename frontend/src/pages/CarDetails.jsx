@@ -10,7 +10,7 @@ const CarDetails = () => {
   const { id } = useParams();
   const [car, setCar] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const apiBase = "${apiBase}";
+  const apiBase = '${apiBase}';
 
   useEffect(() => {
     // جلب تفاصيل السيارة مع كل صورها من المسار الجديد
@@ -152,3 +152,4 @@ const CarDetails = () => {
 
 
 export default CarDetails;
+
