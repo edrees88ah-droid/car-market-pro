@@ -5,12 +5,12 @@ import {
   MessageCircle, Phone, Calendar, Gauge, 
   ArrowRight, ArrowLeft, User, Eye, MapPin 
 } from 'lucide-react';
-
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const CarDetails = () => {
   const { id } = useParams();
   const [car, setCar] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const apiBase = "http://localhost:5000";
+  const apiBase = "${apiBase}";
 
   useEffect(() => {
     // جلب تفاصيل السيارة مع كل صورها من المسار الجديد
@@ -149,5 +149,6 @@ const CarDetails = () => {
     </div>
   );
 };
+
 
 export default CarDetails;
