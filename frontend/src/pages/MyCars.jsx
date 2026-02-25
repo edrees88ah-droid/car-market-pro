@@ -5,12 +5,12 @@ import {
   Trash2, Edit3, CheckCircle, Eye, MessageCircle, 
   ExternalLink, Plus, Loader2, AlertTriangle, Clock, CheckCheck 
 } from 'lucide-react';
-
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const MyCars = () => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
-    //const apiBase = "http://localhost:5000";
-const apiBase = import.meta.env.VITE_API_URL;
+    const apiBase = "${apiBase}";
+
     // 1. جلب البيانات من السيرفر
     const loadData = async () => {
         try {
@@ -185,5 +185,6 @@ const apiBase = import.meta.env.VITE_API_URL;
         </div>
     );
 };
+
 
 export default MyCars;
