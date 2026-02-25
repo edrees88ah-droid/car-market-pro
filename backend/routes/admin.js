@@ -2,7 +2,7 @@ import express from 'express';
 import pool from '../db.js';
 import verifyToken from '../middleware/authMiddleware.js'; 
 import sendEmail from '../utils/sendEmail.js';
-
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const router = express.Router();
 
 // 🛡️ حارس التأكد من الإدارة (المحرك الداخلي)
@@ -16,7 +16,7 @@ const isAdmin = (req, res, next) => {
 };
 
 // 1. المسار الرئيسي: جلب كل بيانات لوحة التحكم
-// الرابط النهائي: http://localhost:5000/api/admin/dashboard-data
+// الرابط النهائي: ${apiBase}/api/admin/dashboard-data
 router.get('/dashboard-data', verifyToken, isAdmin, async (req, res) => {
     try {
         console.log("✅  Enter Admin Saveدخول آمن للمدير رقم:", req.user.id);
@@ -107,5 +107,6 @@ router.patch('/verify-payment/:id', verifyToken, isAdmin, async (req, res) => {
    // pendingCars: carsResult.rows || []
 //});
 });
+
 
 export default router;
