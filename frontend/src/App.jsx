@@ -5,19 +5,16 @@ import {
   Car, LogIn, PlusCircle, LogOut, LayoutGrid, 
   Search, ShieldCheck, MapPin, Loader2, Bell 
 } from 'lucide-react';
-// في أعلى الملف تحت الـ imports مباشرة
 const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 // استيراد مكونات الخريطة
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-
 // إصلاح أيقونة الخريطة
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 let DefaultIcon = L.icon({ iconUrl: markerIcon, shadowUrl: markerShadow, iconSize: [25, 41], iconAnchor: [12, 41] });
 L.Marker.prototype.options.icon = DefaultIcon;
-
 // استيراد الصفحات والمكونات
 import CarCard from './components/CarCard.jsx';
 import AddCar from './pages/AddCar.jsx';
@@ -109,7 +106,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user'));
-  const apiBase = '${apiBase}';
+  //const apiBase = '${apiBase}';
 
   // دالة جلب العدادات بشكل موحد ✅
   const fetchCounts = async () => {
