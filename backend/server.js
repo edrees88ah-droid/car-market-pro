@@ -16,6 +16,12 @@ import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
 const app = express();
+app.use(cors({
+    origin: '*', // يمكنك تغييره لرابط موقعك لاحقاً لزيادة الأمان
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -25,12 +31,6 @@ app.use(helmet({
     crossOriginEmbedderPolicy: false
 }));
 app.use(xss()); // حماية ضد هجمات الـ XSS
-app.use(cors({
-    origin: '*', // يمكنك تغييره لرابط موقعك لاحقاً لزيادة الأمان
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
 // تحليل البيانات
 app.use(express.json({ limit: '10mb' })); 
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -53,6 +53,7 @@ app.get('/', (req, res) => {
 
 // ✅ تصدير التطبيق لـ Vercel (أهم سطر)
 export default app;
+
 
 
 
