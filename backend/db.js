@@ -1,7 +1,7 @@
 import pkg from 'pg';
 const { Pool } = pkg;
-//import dotenv from 'dotenv';
-//dotenv.config();
+import dotenv from 'dotenv';
+dotenv.config();
 export default pool;
 const pool = new Pool({
   // الرابط سيأتي من إعدادات Vercel
@@ -19,6 +19,7 @@ pool.on('error', (err) => {
 });
 
 export default pool;
+
 
 
 
