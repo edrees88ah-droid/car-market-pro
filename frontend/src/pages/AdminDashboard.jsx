@@ -15,12 +15,11 @@ const AdminDashboard = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const apiBase = '${apiBase}';
+   // const apiBase = '${apiBase}';
     const fetchAdminData = async () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            
             const res = await axios.get(`${apiBase}/api/admin/dashboard-data`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -217,5 +216,6 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
