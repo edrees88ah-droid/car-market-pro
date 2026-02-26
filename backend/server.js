@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 dotenv.config();
-
 // استيراد الروابط (تأكد من وجود .js في النهاية)
 import pool from './db.js'; 
 import authRoutes from './routes/auth.js';
@@ -53,6 +52,7 @@ app.get('/', (req, res) => {
 
 // ✅ تصدير التطبيق لـ Vercel (أهم سطر)
 export default app;
+
 
 
 
