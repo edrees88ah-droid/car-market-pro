@@ -1,4 +1,3 @@
-dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import express from 'express';
 import cors from 'cors';
@@ -7,6 +6,7 @@ import xss from 'xss-clean';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+dotenv.config();
 
 // استيراد الروابط (تأكد من وجود .js في النهاية)
 import pool from './db.js'; 
@@ -53,6 +53,7 @@ app.get('/', (req, res) => {
 
 // ✅ تصدير التطبيق لـ Vercel (أهم سطر)
 export default app;
+
 
 
 
