@@ -2,27 +2,22 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import dotenv from 'dotenv';
 dotenv.config();
+export default pool;
 const pool = new Pool({
+  // الرابط سيأتي من إعدادات Vercel
   connectionString: process.env.DATABASE_URL,
+  // هذا الجزء هو "المفتاح" لحل مشكلة Aiven
   ssl: {
-    rejectUnauthorized: false // ده اللي بيخلي Aiven يقبل اتصال Vercel و VS Code
+    rejectUnauthorized: false,
   },
-  // إعدادات لضمان عدم تعليق السيرفر في بيئة Vercel
-  connectionTimeoutMillis: 5000, 
-  idleTimeoutMillis: 30000,
-  max: 10
+  // تقليل عدد الاتصالات ليتناسب مع الخطة المجانية لـ Aiven
+  max: 1 
 });
 
-// اختبار الاتصال مع طباعة الخطأ لو حصل
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.error('❌ خطأ في الاتصال بالقاعدة:', err.message);
-  } else {
-    console.log('✅✅✅ السيرفر اتصل بنجاح بقاعدة البيانات السحابية');
-  }
+pool.on('error', (err) => {
+  console.error('⚠️ خطأ مفاجئ في القاعدة:', err.message);
 });
 
 export default pool;
-
 
 
