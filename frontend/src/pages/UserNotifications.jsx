@@ -5,7 +5,7 @@ import { Bell, CheckCircle, XCircle, Clock, Trash2, Info, Loader2 } from 'lucide
 const UserNotifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
-    const apiBase = "http://localhost:5000";
+    const apiBase = `${apiBase}`;
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -96,6 +96,7 @@ const UserNotifications = () => {
 
 
 export default UserNotifications;
+
 
 
 
