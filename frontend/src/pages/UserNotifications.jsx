@@ -1,12 +1,11 @@
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bell, CheckCircle, XCircle, Clock, Trash2, Info, Loader2 } from 'lucide-react';
-// في أعلى الملف تحت الـ imports مباشرة
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const UserNotifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
-    //const apiBase = '${apiBase}';
+    const apiBase = "http://localhost:5000";
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -97,5 +96,6 @@ const UserNotifications = () => {
 
 
 export default UserNotifications;
+
 
 
