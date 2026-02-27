@@ -15,7 +15,7 @@ const AdminDashboard = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const apiBase = `${apiBase}`;
+    const apiBase = "http://localhost:5000";
     const fetchAdminData = async () => {
         try {
             setLoading(true);
@@ -216,6 +216,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
