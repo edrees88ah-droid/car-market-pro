@@ -1,3 +1,4 @@
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -6,7 +7,6 @@ import {
   Phone, User, Car, Loader2, AlertCircle, TrendingUp 
 } from 'lucide-react';
 // في أعلى الملف تحت الـ imports مباشرة
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const AdminDashboard = () => {
     // 1. تهيئة البيانات بقيم افتراضية لمنع الشاشة البيضاء
     const [data, setData] = useState({ 
@@ -216,6 +216,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
