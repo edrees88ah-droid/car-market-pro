@@ -1,3 +1,5 @@
+// في أعلى الملف تحت الـ importsمباشرة
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -5,8 +7,6 @@ import {
   Car, Bell, ShieldCheck, LogOut, 
   User, PlusCircle, LayoutGrid, Menu, X 
 } from 'lucide-react';
-// في أعلى الملف تحت الـ imports مباشرة
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const Navbar = () => {
     const navigate = useNavigate();
     const [unreadCount, setUnreadCount] = useState(0);
@@ -14,7 +14,7 @@ const Navbar = () => {
     
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
-    const apiBase = '${apiBase}:';
+    const apiBase = "http://localhost:5000";
 
     // 1. جلب عدد الإشعارات غير المقروءة
     const fetchUnreadCount = async () => {
@@ -137,4 +137,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
