@@ -1,3 +1,4 @@
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -5,7 +6,6 @@ import {
   MessageCircle, Phone, Calendar, Gauge, 
   ArrowRight, ArrowLeft, User, Eye, MapPin 
 } from 'lucide-react';
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const CarDetails = () => {
   const { id } = useParams();
   const [car, setCar] = useState(null);
@@ -152,6 +152,7 @@ const CarDetails = () => {
 
 
 export default CarDetails;
+
 
 
 
