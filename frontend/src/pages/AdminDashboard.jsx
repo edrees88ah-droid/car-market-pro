@@ -6,7 +6,6 @@ import {
   ShieldCheck, Clock, Coins, Check, X, Eye, 
   Phone, User, Car, Loader2, AlertCircle, TrendingUp 
 } from 'lucide-react';
-// في أعلى الملف تحت الـ imports مباشرة
 const AdminDashboard = () => {
     // 1. تهيئة البيانات بقيم افتراضية لمنع الشاشة البيضاء
     const [data, setData] = useState({ 
@@ -216,6 +215,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
