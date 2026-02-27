@@ -1,3 +1,4 @@
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Routes, Route, Link } from 'react-router-dom';
@@ -5,7 +6,6 @@ import {
   Car, LogIn, PlusCircle, LogOut, LayoutGrid, 
   Search, ShieldCheck, MapPin, Loader2, Bell 
 } from 'lucide-react';
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 // استيراد مكونات الخريطة
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
