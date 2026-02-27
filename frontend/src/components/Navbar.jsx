@@ -14,7 +14,7 @@ const Navbar = () => {
     
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
-    const apiBase = "http://localhost:5000";
+   // const apiBase = "http://localhost:5000";
 
     // 1. جلب عدد الإشعارات غير المقروءة
     const fetchUnreadCount = async () => {
@@ -137,5 +137,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
 
