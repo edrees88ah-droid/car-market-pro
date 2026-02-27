@@ -5,7 +5,7 @@ import { Car, Gauge, Calendar, ArrowLeft, CheckCircle2, Eye } from 'lucide-react
 // في أعلى الملف تحت الـ imports مباشرة
 const CarCard = ({ car }) => {
   // 1. توحيد القاعدة الأساسية للرابط (بدون ميلة في الآخر لتجنب التكرار)
-  const apiBase = "http://localhost:5000";  
+  //const apiBase = "http://localhost:5000";  
   const isSold = car.status === 'sold';
   // 2. معالجة المسار بشكل احترافي
   const getImageUrl = () => {
@@ -84,6 +84,7 @@ const CarCard = ({ car }) => {
 
 
 export default CarCard;
+
 
 
 
