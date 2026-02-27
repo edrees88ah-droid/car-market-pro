@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Mail, Lock, Loader2 } from 'lucide-react';
 const Login = () => {
+  const apiBase = import.meta.env.VITE_API_URL;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -96,6 +97,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 
