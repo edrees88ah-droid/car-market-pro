@@ -1,3 +1,4 @@
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -5,7 +6,6 @@ import {
   ImagePlus, MapPin, Loader2, CheckCircle2, 
   Coins, Car, Calendar, Gauge, Info, Settings, Fuel, AlertCircle, ShieldCheck 
 } from 'lucide-react';
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 // استيراد مكونات الخريطة
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -89,7 +89,7 @@ const AddCar = () => {
     }
 
     try {
-      await axios.post('${apiBase}/api/cars/add', data, {
+      await axios.post(`${apiBase}/api/cars/add`, data, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -262,3 +262,4 @@ const AddCar = () => {
 
 
 export default AddCar;
+
