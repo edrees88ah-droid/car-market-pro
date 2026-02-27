@@ -2,7 +2,6 @@ import express from 'express';
 import pool from '../db.js';
 import verifyToken from '../middleware/authMiddleware.js';
 const router = express.Router();
-
 // 1. جلب عدد الإشعارات غير المقروءة (للجرس في الـ Navbar)
 router.get('/unread-count', verifyToken, async (req, res) => {
     try {
@@ -47,4 +46,5 @@ router.patch('/mark-all-read', verifyToken, async (req, res) => {
 
 
 export default router;
+
 
