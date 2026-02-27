@@ -9,7 +9,7 @@ const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const MyCars = () => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
-    const apiBase = "http://localhost:5000";
+    //const apiBase = "http://localhost:5000";
 
     // 1. جلب البيانات من السيرفر
     const loadData = async () => {
@@ -188,6 +188,7 @@ const MyCars = () => {
 
 
 export default MyCars;
+
 
 
 
