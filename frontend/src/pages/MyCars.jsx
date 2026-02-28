@@ -30,10 +30,15 @@ const MyCars = () => {
     useEffect(() => { loadData(); }, []);
 
   // 2. دالة تصحيح مسار الصورة
-const getFullImagePath = (path) => {
+//const getFullImagePath = (path) => {
+ // if (!path) return "/placeholder.jpg";
+//  return `${apiBase}/${path.replace(/\\/g, '/')}`;
+//};
+  const getFullImagePath = (path) => {
   if (!path) return "/placeholder.jpg";
-  return `${apiBase}/${path.replace(/\\/g, '/')}`;
-};
+  // إذا كان الرابط يبدأ بـ http (يعني قادم من Cloudinary) استعمله كما هو ✅
+  if (path.startsWith('http')) return path;
+  };
   
     // 3. دالة حذف السيارة
     const handleDelete = async (id) => {
@@ -187,6 +192,7 @@ const getFullImagePath = (path) => {
 
 
 export default MyCars;
+
 
 
 
