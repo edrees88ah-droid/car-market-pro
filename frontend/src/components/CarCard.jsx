@@ -17,7 +17,7 @@ const CarCard = ({ car }) => {
 //const getFullImagePath = (path) => {
  // if (!path) return "/placeholder.jpg";
   // إذا كان الرابط يبدأ بـ http (يعني قادم من Cloudinary) استعمله كما هو ✅
-  if (path.startsWith('http')) return path;
+ // if (path.startsWith('http')) return path;
 //};
   const getFullImagePath = (path) => {
     if (!path) return "/placeholder.jpg";
@@ -95,6 +95,7 @@ const CarCard = ({ car }) => {
 
 
 export default CarCard;
+
 
 
 
