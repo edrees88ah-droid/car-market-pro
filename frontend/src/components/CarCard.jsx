@@ -14,10 +14,17 @@ const CarCard = ({ car }) => {
    // const cleanPath = car.main_image.replace(/\\/g, '/');
    // return `${apiBase}/${cleanPath}`;
  // };
-const getFullImagePath = (path) => {
-  if (!path) return "/placeholder.jpg";
+//const getFullImagePath = (path) => {
+ // if (!path) return "/placeholder.jpg";
   // إذا كان الرابط يبدأ بـ http (يعني قادم من Cloudinary) استعمله كما هو ✅
   if (path.startsWith('http')) return path;
+//};
+  const getFullImagePath = (path) => {
+    if (!path) return "/placeholder.jpg";
+    // إذا كان الرابط يبدأ بـ http، نعرضه كما هو فوراً ✅
+    if (path.startsWith('https')) return path;
+    // للحالات القديمة (إذا كان لسه في صور localhost)
+    return `http://localhost:5000/${path.replace(/\\/g, '/')}`;
 };
   const getCurrencyName = (code) => {
     const currencies = { 'SDG': 'ج.س', 'SAR': 'ريال', 'EGP': 'ج.م', 'USD': '$', 'AED': 'درهم' };
@@ -88,6 +95,7 @@ const getFullImagePath = (path) => {
 
 
 export default CarCard;
+
 
 
 
