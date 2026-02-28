@@ -86,10 +86,10 @@ router.post('/add', verifyToken, upload.array('images', 10), async (req, res) =>
     }
 });
 // ==========================================
-// باقي المسارات (جلب الصور الآن صار أسهل لأنها روابط كاملة)
+// 🌍 المسارات العامة (المعرض والتفاصيل)
 // ==========================================
 
-router.get('/all', async (req, res) => {
+// جلب السيارات النشطة فقط للمعرض العامrouter.get('/all', async (req, res) => {
     try {
         const query = `
             SELECT c.*, (SELECT image_path FROM car_images WHERE car_id = c.id LIMIT 1) as main_image
@@ -99,7 +99,11 @@ router.get('/all', async (req, res) => {
         res.json(result.rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
+/ ==========================================
+// 🛠️ مسارات التحكم (تعديل، حذف، بيع)
+// ==========================================
 
+// جلب إعلانات المستخدم المسجل حالياً
 router.get('/my-cars', verifyToken, async (req, res) => {
     try {
         const query = `
@@ -110,10 +114,11 @@ router.get('/my-cars', verifyToken, async (req, res) => {
         res.json(result.rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
-
+// جلب تفاصيل سيارة واحدة مع صورها وبيانات المالك
 router.get('/detail/:id', async (req, res) => {
     try {
         const { id } = req.params;
+                // تحديث المشاهدات
         await pool.query("UPDATE cars SET views = COALESCE(views, 0) + 1 WHERE id = $1", [id]);
         const carQuery = `SELECT c.*, u.name as seller_name, u.phone as phone FROM cars c LEFT JOIN users u ON c.user_id = u.id WHERE c.id = $1`;
         const carRes = await pool.query(carQuery, [id]);
@@ -122,7 +127,7 @@ router.get('/detail/:id', async (req, res) => {
         res.json({ ...carRes.rows[0], images: imagesRes.rows });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
-
+// تعديل بيانات السيارة
 router.put('/update/:id', verifyToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -136,13 +141,14 @@ router.put('/update/:id', verifyToken, async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// تحديد السيارة كمباعة (Sold) لإبراء الذمة
 router.patch('/sold/:id', verifyToken, async (req, res) => {
     try {
         await pool.query("UPDATE cars SET status = 'sold' WHERE id = $1 AND user_id = $2", [req.params.id, req.user.id]);
         res.json({ message: "تم تحويل الحالة لمباعة بنجاح 🤝" });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
-
+// حذف الإعلان نهائياً
 router.delete('/delete/:id', verifyToken, async (req, res) => {
     try {
         await pool.query("DELETE FROM cars WHERE id = $1 AND user_id = $2", [req.params.id, req.user.id]);
@@ -151,3 +157,4 @@ router.delete('/delete/:id', verifyToken, async (req, res) => {
 });
 
 export default router;
+
