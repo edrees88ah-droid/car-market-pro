@@ -7,37 +7,31 @@ import verifyToken from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// --- 1. إعداد ملتر لتخزين الصور مؤقتاً في الذاكرة (Memory Storage) ---
+// --- 1. إعداد ملتر لتخزين الصور مؤقتاً في الذاكرة ---
 const storage = multer.memoryStorage();
 const upload = multer({ 
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 } // حد 5 ميجا للصورة
+    limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
 // --- 2. دالة إرسال الصورة إلى ImgBB وأخذ الرابط ---
 const uploadToImgBB = async (fileBuffer) => {
     try {
         const form = new FormData();
-        // نرسل الصورة بصيغة Base64 كما تطلب API الخاص بـ ImgBB
         form.append('image', fileBuffer.toString('base64'));
-        
-        // جلب المفتاح من إعدادات Vercel
         const apiKey = process.env.IMGBB_API_KEY; 
 
         const response = await axios.post(`https://api.imgbb.com/1/upload?key=${apiKey}`, form, {
             headers: { ...form.getHeaders() }
         });
-
-        return response.data.data.url; // يعيد رابط الصورة النهائي (https://...)
+        return response.data.data.url;
     } catch (error) {
-        console.error("خطأ في رفع الصورة لـ ImgBB:", error.response?.data || error.message);
-        throw new Error("فشل الرفع إلى ImgBB");
+        console.error("خطأ في رفع الصورة لـ ImgBB:", error.message);
+        throw new Error("فشل الرفع السحابي");
     }
 };
 
-// ==========================================
-// 🚀 مسار إضافة سيارة جديدة (الرفع لـ ImgBB)
-// ==========================================
+// --- 3. إضافة سيارة جديدة ---
 router.post('/add', verifyToken, upload.array('images', 10), async (req, res) => {
     const client = await pool.connect();
     try {
@@ -46,7 +40,6 @@ router.post('/add', verifyToken, upload.array('images', 10), async (req, res) =>
 
         await client.query('BEGIN');
 
-        // أ- حفظ بيانات السيارة في PostgreSQL
         const carRes = await client.query(
             `INSERT INTO cars (brand, model, year, price, mileage, description, fuel_type, transmission, currency, lat, lng, user_id, status) 
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'pending') RETURNING id`,
@@ -54,18 +47,14 @@ router.post('/add', verifyToken, upload.array('images', 10), async (req, res) =>
         );
         const carId = carRes.rows[0].id;
 
-        // ب- رفع الصور إلى ImgBB وحفظ روابطها الـ HTTPS 🔥
         if (req.files && req.files.length > 0) {
-            const imageQuery = "INSERT INTO car_images (car_id, image_path) VALUES ($1, $2)";
-            
             for (let file of req.files) {
-                // نرفع كل صورة للسحاب وننتظر الرابط
                 const remoteUrl = await uploadToImgBB(file.buffer);
-                await client.query(imageQuery, [carId, remoteUrl]);
+                await client.query("INSERT INTO car_images (car_id, image_path) VALUES ($1, $2)", [carId, remoteUrl]);
             }
         }
 
-        // ج- تنبيه المدير (تلقائي)
+        // تنبيه المدير
         const adminRes = await client.query("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
         if (adminRes.rows.length > 0) {
             await client.query(
@@ -76,20 +65,16 @@ router.post('/add', verifyToken, upload.array('images', 10), async (req, res) =>
 
         await client.query('COMMIT');
         res.status(201).json({ message: "تم نشر الإعلان ورفع الصور بنجاح! ✅", carId });
-
     } catch (err) {
         await client.query('ROLLBACK');
-        console.error("Critical Error:", err.message);
-        res.status(500).json({ error: "حدث خطأ أثناء المعالجة السحابية" });
+        res.status(500).json({ error: err.message });
     } finally {
         client.release();
     }
 });
-// ==========================================
-// 🌍 المسارات العامة (المعرض والتفاصيل)
-// ==========================================
 
-// جلب السيارات النشطة فقط للمعرض العامrouter.get('/all', async (req, res) => {
+// --- 4. المعرض العام ---
+router.get('/all', async (req, res) => {
     try {
         const query = `
             SELECT c.*, (SELECT image_path FROM car_images WHERE car_id = c.id LIMIT 1) as main_image
@@ -99,35 +84,44 @@ router.post('/add', verifyToken, upload.array('images', 10), async (req, res) =>
         res.json(result.rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
-/ ==========================================
-// 🛠️ مسارات التحكم (تعديل، حذف، بيع)
-// ==========================================
 
-// جلب إعلانات المستخدم المسجل حالياً
+// --- 5. إعلاناتي ---
 router.get('/my-cars', verifyToken, async (req, res) => {
     try {
-        const query = `
+        const result = await pool.query(`
             SELECT c.*, (SELECT image_path FROM car_images WHERE car_id = c.id LIMIT 1) as main_image
             FROM cars c WHERE c.user_id = $1 ORDER BY c.created_at DESC
-        `;
-        const result = await pool.query(query, [req.user.id]);
+        `, [req.user.id]);
         res.json(result.rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
-// جلب تفاصيل سيارة واحدة مع صورها وبيانات المالك
+
+// --- 6. تفاصيل السيارة (تم إصلاح القوس الزائد هنا ✅) ---
 router.get('/detail/:id', async (req, res) => {
     try {
         const { id } = req.params;
-                // تحديث المشاهدات
         await pool.query("UPDATE cars SET views = COALESCE(views, 0) + 1 WHERE id = $1", [id]);
-        const carQuery = `SELECT c.*, u.name as seller_name, u.phone as phone FROM cars c LEFT JOIN users u ON c.user_id = u.id WHERE c.id = $1`;
-        const carRes = await pool.query(carQuery, [id]);
-        if (carRes.rows.length === 0) return res.status(404).json({ error: "السيارة غير موجودة" });
+        const carRes = await pool.query(
+            `SELECT c.*, u.name as seller_name, u.phone FROM cars c 
+             JOIN users u ON c.user_id = u.id WHERE c.id = $1`, [id]
+        );
+        if (carRes.rows.length === 0) return res.status(404).json({ error: "غير موجود" });
         const imagesRes = await pool.query("SELECT image_path FROM car_images WHERE car_id = $1", [id]);
         res.json({ ...carRes.rows[0], images: imagesRes.rows });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// --- 7. حذف الإعلان ---
+router.delete('/delete/:id', verifyToken, async (req, res) => {
+    try {
+        await pool.query("DELETE FROM cars WHERE id = $1 AND user_id = $2", [req.params.id, req.user.id]);
+        res.json({ message: "تم حذف الإعلان" });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
-// تعديل بيانات السيارة
+
+//--- 8. تعديل بيانات السيارة
 router.put('/update/:id', verifyToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -141,20 +135,12 @@ router.put('/update/:id', verifyToken, async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// تحديد السيارة كمباعة (Sold) لإبراء الذمة
+// --- 9. تحديد كمباع ---
 router.patch('/sold/:id', verifyToken, async (req, res) => {
     try {
         await pool.query("UPDATE cars SET status = 'sold' WHERE id = $1 AND user_id = $2", [req.params.id, req.user.id]);
-        res.json({ message: "تم تحويل الحالة لمباعة بنجاح 🤝" });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-});
-// حذف الإعلان نهائياً
-router.delete('/delete/:id', verifyToken, async (req, res) => {
-    try {
-        await pool.query("DELETE FROM cars WHERE id = $1 AND user_id = $2", [req.params.id, req.user.id]);
-        res.json({ message: "تم حذف الإعلان بنجاح 🗑️" });
+        res.json({ message: "تم تحويل الحالة لمباعة" });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 export default router;
-
