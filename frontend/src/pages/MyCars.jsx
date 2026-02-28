@@ -9,7 +9,7 @@ import {
 const MyCars = () => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
-     const apiBase = `${apiBase}`;
+    // const apiBase = `${apiBase}`;
 
     // 1. جلب البيانات من السيرفر
     const loadData = async () => {
@@ -29,13 +29,12 @@ const MyCars = () => {
 
     useEffect(() => { loadData(); }, []);
 
-    // 2. دالة تصحيح مسار الصورة
-    const getFullImagePath = (path) => {
-        if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
-        const cleanPath = path.replace(/\\/g, '/');
-        return `${apiBase}/${cleanPath}`;
-    };
-
+  // 2. دالة تصحيح مسار الصورة
+const getFullImagePath = (path) => {
+  if (!path) return "/placeholder.jpg";
+  return `${apiBase}/${path.replace(/\\/g, '/')}`;
+};
+  
     // 3. دالة حذف السيارة
     const handleDelete = async (id) => {
         if (!window.confirm("⚠️ هل أنت متأكد من حذف هذا الإعلان نهائياً؟")) return;
@@ -188,6 +187,7 @@ const MyCars = () => {
 
 
 export default MyCars;
+
 
 
 
