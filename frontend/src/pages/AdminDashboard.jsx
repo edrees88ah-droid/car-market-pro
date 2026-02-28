@@ -44,11 +44,16 @@ const AdminDashboard = () => {
         fetchAdminData(); 
     }, []);
 
-    const getImgUrl = (path) => {
-        if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
-        return `${apiBase}/${path.replace(/\\/g, '/')}`;
-    };
-
+  //  const getImgUrl = (path) => {
+      //  if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
+       // return `${apiBase}/${path.replace(/\\/g, '/')}`;
+  //  };
+ // 2. دالة تصحيح مسار الصورة
+const getFullImagePath = (path) => {
+  if (!path) return "/placeholder.jpg";
+  return `${apiBase}/${path.replace(/\\/g, '/')}`;
+};
+ 
     const handleStatusUpdate = async (id, status) => {
         const action = status === 'active' ? "قبول ونشر" : "رفض";
         if (!window.confirm(`هل أنت متأكد من ${action} هذا الإعلان؟`)) return;
@@ -215,6 +220,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
