@@ -8,13 +8,17 @@ const CarCard = ({ car }) => {
  const apiBase = `${apiBase}`; 
   const isSold = car.status === 'sold';
   // 2. معالجة المسار بشكل احترافي
-  const getImageUrl = () => {
-    if (!car.main_image) return 'https://via.placeholder.com/400x300?text=No+Image';
+ // const getImageUrl = () => {
+   // if (!car.main_image) return 'https://via.placeholder.com/400x300?text=No+Image';
     // تحويل \ الخاصة بالويندوز إلى / وتجنب تكرار الميول
-    const cleanPath = car.main_image.replace(/\\/g, '/');
-    return `${apiBase}/${cleanPath}`;
-  };
-
+   // const cleanPath = car.main_image.replace(/\\/g, '/');
+   // return `${apiBase}/${cleanPath}`;
+ // };
+const getFullImagePath = (path) => {
+  if (!path) return "/placeholder.jpg";
+  // إذا كان الرابط يبدأ بـ http (يعني قادم من Cloudinary) استعمله كما هو ✅
+  if (path.startsWith('http')) return path;
+};
   const getCurrencyName = (code) => {
     const currencies = { 'SDG': 'ج.س', 'SAR': 'ريال', 'EGP': 'ج.م', 'USD': '$', 'AED': 'درهم' };
     return currencies[code] || code;
@@ -84,6 +88,7 @@ const CarCard = ({ car }) => {
 
 
 export default CarCard;
+
 
 
 
