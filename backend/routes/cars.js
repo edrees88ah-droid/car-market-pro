@@ -1,33 +1,42 @@
 import express from 'express';
 import multer from 'multer';
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import axios from 'axios';
+import FormData from 'form-data';
 import pool from '../db.js';
 import verifyToken from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// --- 1. إعداد Cloudinary (يقرأ البيانات من إعدادات Vercel) ---
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+// --- 1. إعداد ملتر لتخزين الصور مؤقتاً في الذاكرة (Memory Storage) ---
+const storage = multer.memoryStorage();
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // حد 5 ميجا للصورة
 });
 
-// --- 2. إعداد المخزن السحابي للصور ---
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'souq_sayarati', // اسم المجلد الذي ستظهر فيه الصور داخل Cloudinary
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-    transformation: [{ width: 1000, height: 1000, crop: 'limit' }] // تصغير حجم الصور تلقائياً
-  },
-});
+// --- 2. دالة إرسال الصورة إلى ImgBB وأخذ الرابط ---
+const uploadToImgBB = async (fileBuffer) => {
+    try {
+        const form = new FormData();
+        // نرسل الصورة بصيغة Base64 كما تطلب API الخاص بـ ImgBB
+        form.append('image', fileBuffer.toString('base64'));
+        
+        // جلب المفتاح من إعدادات Vercel
+        const apiKey = process.env.IMGBB_API_KEY; 
 
-const upload = multer({ storage: storage });
+        const response = await axios.post(`https://api.imgbb.com/1/upload?key=${apiKey}`, form, {
+            headers: { ...form.getHeaders() }
+        });
+
+        return response.data.data.url; // يعيد رابط الصورة النهائي (https://...)
+    } catch (error) {
+        console.error("خطأ في رفع الصورة لـ ImgBB:", error.response?.data || error.message);
+        throw new Error("فشل الرفع إلى ImgBB");
+    }
+};
 
 // ==========================================
-// 🚀 مسار إضافة سيارة جديدة (الرفع للسحاب مباشرة)
+// 🚀 مسار إضافة سيارة جديدة (الرفع لـ ImgBB)
 // ==========================================
 router.post('/add', verifyToken, upload.array('images', 10), async (req, res) => {
     const client = await pool.connect();
@@ -37,7 +46,7 @@ router.post('/add', verifyToken, upload.array('images', 10), async (req, res) =>
 
         await client.query('BEGIN');
 
-        // أ- حفظ بيانات السيارة
+        // أ- حفظ بيانات السيارة في PostgreSQL
         const carRes = await client.query(
             `INSERT INTO cars (brand, model, year, price, mileage, description, fuel_type, transmission, currency, lat, lng, user_id, status) 
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'pending') RETURNING id`,
@@ -45,38 +54,37 @@ router.post('/add', verifyToken, upload.array('images', 10), async (req, res) =>
         );
         const carId = carRes.rows[0].id;
 
-        // ب- حفظ روابط الصور (التي أصبحت الآن روابط HTTPS عالمية من Cloudinary) ✅
+        // ب- رفع الصور إلى ImgBB وحفظ روابطها الـ HTTPS 🔥
         if (req.files && req.files.length > 0) {
             const imageQuery = "INSERT INTO car_images (car_id, image_path) VALUES ($1, $2)";
+            
             for (let file of req.files) {
-                // ملاحظة: في CloudinaryStorage، الرابط موجود في file.path
-                await client.query(imageQuery, [carId, file.path]);
+                // نرفع كل صورة للسحاب وننتظر الرابط
+                const remoteUrl = await uploadToImgBB(file.buffer);
+                await client.query(imageQuery, [carId, remoteUrl]);
             }
         }
 
-        // ج- تنبيه المدير
-        const adminResult = await client.query("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
-        const adminId = adminResult.rows.length > 0 ? adminResult.rows[0].id : null;
-
-        if (adminId) {
+        // ج- تنبيه المدير (تلقائي)
+        const adminRes = await client.query("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
+        if (adminRes.rows.length > 0) {
             await client.query(
                 "INSERT INTO notifications (user_id, title, message) VALUES ($1, $2, $3)",
-                [adminId, "🆕 إعلان جديد بانتظار المراجعة", `قام مستخدم بإضافة سيارة ${brand} ${model}.`]
+                [adminRes.rows[0].id, "🆕 إعلان جديد", `سيارة ${brand} ${model} تنتظر المراجعة.`]
             );
         }
 
         await client.query('COMMIT');
-        res.status(201).json({ message: "تم نشر الإعلان بنجاح في السحاب! ✅", carId });
+        res.status(201).json({ message: "تم نشر الإعلان ورفع الصور بنجاح! ✅", carId });
 
     } catch (err) {
         await client.query('ROLLBACK');
-        console.error("خطأ رفع الصور السحابي:", err.message);
-        res.status(500).json({ error: "فشل الرفع السحابي: " + err.message });
+        console.error("Critical Error:", err.message);
+        res.status(500).json({ error: "حدث خطأ أثناء المعالجة السحابية" });
     } finally {
         client.release();
     }
 });
-
 // ==========================================
 // باقي المسارات (جلب الصور الآن صار أسهل لأنها روابط كاملة)
 // ==========================================
