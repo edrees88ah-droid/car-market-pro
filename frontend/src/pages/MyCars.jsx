@@ -21,7 +21,7 @@ const MyCars = () => {
             });
             setCars(res.data);
         } catch (err) { console.error(err); } finally { setLoading(false); }
-    };
+    }
     // ... باقي الكود ...
     // 1. جلب البيانات من السيرفر
     const loadData = async () => {
