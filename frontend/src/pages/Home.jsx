@@ -13,12 +13,24 @@ const Home = ({ cars, loading }) => {
     const currencies = { 'SDG': 'ج.س', 'SAR': 'ريال', 'EGP': 'ج.م', 'USD': '$' };
     return currencies[code] || code;
   };
-
-  const filteredCars = cars?.filter(car => 
-    car.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    car.model?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
-
+// داخل ملف Home.jsx - استبدل جزء الـ Marker بهذا ✅
+{filteredCars.map(car => (
+  (car.lat && car.lng) && (
+    <Marker key={car.id} position={[car.lat, car.lng]}>
+      <Popup>
+        <div className="text-right p-1" dir="rtl">
+           <img 
+             src={car.main_image?.startsWith('http') ? car.main_image : `${apiBase}/${car.main_image?.replace(/\\/g, '/')}`} 
+             className="w-full h-16 object-cover rounded-lg mb-2" 
+             onError={(e) => e.target.src = '/placeholder.jpg'}
+           />
+           <h4 className="font-bold text-blue-700 text-xs">{car.brand}</h4>
+           <Link to={`/car/${car.id}`} className="text-[9px] text-white bg-blue-600 py-1 rounded-md block text-center mt-1">التفاصيل</Link>
+        </div>
+      </Popup>
+    </Marker>
+  )
+))}
   return (
     <div className="max-w-7xl mx-auto p-4 lg:p-8" dir="rtl">
       <div className="max-w-2xl mx-auto mb-10 relative">
