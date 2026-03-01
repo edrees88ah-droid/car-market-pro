@@ -15,7 +15,7 @@ import EditCar from './pages/EditCar.jsx';
 import UserNotifications from './pages/UserNotifications.jsx';
 
 // تعريف الرابط خارج المكون
-const API_BASE = import.meta.env.VITE_API_URL || "https://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function App() {
   const [cars, setCars] = useState([]);
@@ -23,13 +23,10 @@ function App() {
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [loading, setLoading] = useState(true);
   
-  // محاولة قراءة المستخدم بأمان لمنع الانهيار ✅
-  const user = (() => {
-    try {
-      const stored = localStorage.getItem('user');
-      return (stored && stored !== "undefined") ? JSON.parse(stored) : null;
-    } catch (e) { return null; }
-  })();
+  // جلب البيانات من localStorage بأمان
+  const token = localStorage.getItem('token');
+  const storedUser = localStorage.getItem('user');
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
   // دالة جلب العدادات بشكل موحد ✅
   const fetchCounts = useCallback(async () => {
