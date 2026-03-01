@@ -1,4 +1,4 @@
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -9,8 +9,20 @@ import {
 const MyCars = () => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
-   //  const apiBase = `${apiBase}`;
+    // ✅ الطريقة الصحيحة لتعريف الرابط داخل الصفحة
+    const apiBase = import.meta.env.VITE_API_URL || "https://localhost:5000";
 
+    const loadData = async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`${apiBase}/api/cars/my-cars`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setCars(res.data);
+        } catch (err) { console.error(err); } finally { setLoading(false); }
+    };
+    // ... باقي الكود ...
     // 1. جلب البيانات من السيرفر
     const loadData = async () => {
         try {
@@ -198,6 +210,7 @@ const MyCars = () => {
 
 
 export default MyCars;
+
 
 
 
