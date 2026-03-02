@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Loader2 } from 'lucide-react';
@@ -13,26 +12,15 @@ const Home = ({ cars, loading }) => {
     const currencies = { 'SDG': 'ج.س', 'SAR': 'ريال', 'EGP': 'ج.م', 'USD': '$' };
     return currencies[code] || code;
   };
-// داخل ملف Home.jsx - استبدل جزء الـ Marker بهذا ✅
-{filteredCars.map(car => (
-  (car.lat && car.lng) && (
-    <Marker key={car.id} position={[car.lat, car.lng]}>
-      <Popup>
-        <div className="text-right p-1" dir="rtl">
-           <img 
-             src={car.main_image?.startsWith('http') ? car.main_image : `${apiBase}/${car.main_image?.replace(/\\/g, '/')}`} 
-             className="w-full h-16 object-cover rounded-lg mb-2" 
-             onError={(e) => e.target.src = '/placeholder.jpg'}
-           />
-           <h4 className="font-bold text-blue-700 text-xs">{car.brand}</h4>
-           <Link to={`/car/${car.id}`} className="text-[9px] text-white bg-blue-600 py-1 rounded-md block text-center mt-1">التفاصيل</Link>
-        </div>
-      </Popup>
-    </Marker>
-  )
-))};
+
+  const filteredCars = cars?.filter(car => 
+    car.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    car.model?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
+
   return (
     <div className="max-w-7xl mx-auto p-4 lg:p-8" dir="rtl">
+      {/* البحث */}
       <div className="max-w-2xl mx-auto mb-10 relative">
         <input 
           type="text" placeholder="ابحث عن ماركة أو موديل..." 
@@ -43,9 +31,10 @@ const Home = ({ cars, loading }) => {
       </div>
 
       <main>
+        {/* الخريطة */}
         <div className="mb-10 text-right">
           <h3 className="text-lg font-black text-gray-700 mb-4 flex items-center gap-2 italic">
-            <MapPin size={20} className="text-red-500" /> مواقع السيارات
+            <MapPin size={20} className="text-red-500" /> مواقع السيارات النشطة
           </h3>
           <div className="h-[400px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white z-0">
             <MapContainer center={[15.5007, 32.5599]} zoom={5} style={{ height: '100%', width: '100%' }}>
@@ -55,7 +44,11 @@ const Home = ({ cars, loading }) => {
                   <Marker key={car.id} position={[car.lat, car.lng]}>
                     <Popup>
                       <div className="text-right p-1" dir="rtl">
-                         <img src={car.main_image?.startsWith('http') ? car.main_image : `${apiBase}/${car.main_image?.replace(/\\/g, '/')}`} className="w-full h-16 object-cover rounded-lg mb-2" />
+                         <img 
+                           src={car.main_image?.startsWith('http') ? car.main_image : `${apiBase}/${car.main_image?.replace(/\\/g, '/')}`} 
+                           className="w-full h-16 object-cover rounded-lg mb-2" 
+                           alt="car"
+                         />
                          <h4 className="font-bold text-blue-700 text-xs">{car.brand}</h4>
                          <p className="text-[10px] font-black">{Number(car.price).toLocaleString()} {getCurrencyName(car.currency)}</p>
                          <Link to={`/car/${car.id}`} className="text-[9px] text-white bg-blue-600 py-1 rounded-md block text-center mt-1">التفاصيل</Link>
@@ -68,6 +61,7 @@ const Home = ({ cars, loading }) => {
           </div>
         </div>
 
+        {/* عرض البطاقات */}
         {loading ? (
           <div className="flex justify-center p-20"><Loader2 className="animate-spin text-blue-600" size={40} /></div>
         ) : (
