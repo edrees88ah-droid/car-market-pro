@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { Car, ShieldCheck, Bell, LogOut, PlusCircle } from 'lucide-react';
 
-// استيراد الصفحات
 import Home from './pages/Home.jsx';
 import AddCar from './pages/AddCar.jsx';
 import Login from './pages/Login.jsx';
@@ -14,7 +13,6 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import EditCar from './pages/EditCar.jsx';
 import UserNotifications from './pages/UserNotifications.jsx';
 
-// تعريف الرابط خارج المكون
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function App() {
@@ -23,21 +21,14 @@ function App() {
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [loading, setLoading] = useState(true);
   
-  // جلب البيانات من localStorage بأمان
-  //const token = localStorage.getItem('token');
- // const storedUser = localStorage.getItem('user');
-  //const user = storedUser ? JSON.parse(storedUser) : null;
-
-  // محاولة قراءة المستخدم بأمان لمنع الانهيار ✅
- // --- احذف السطرين القديمين وضع هذا مكانهما ---
   const token = localStorage.getItem('token');
+  
+  // ✅ تعريف المستخدم مرة واحدة فقط وبطريقة آمنة
   const user = (() => {
     try {
       const stored = localStorage.getItem('user');
       return (stored && stored !== "undefined") ? JSON.parse(stored) : null;
-    } catch (e) { 
-      return null; 
-    }
+    } catch (e) { return null; }
   })();
   // دالة جلب العدادات بشكل موحد ✅
   const fetchCounts = useCallback(async () => {
