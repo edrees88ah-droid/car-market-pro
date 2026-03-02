@@ -26,15 +26,17 @@ const CarDetails = () => {
       جاري تحميل معرض السيارة... ✨
     </div>
   );
-
- 
 // دالة تصحيح مسار الصورة (تحويل ميول الويندوز)
-  const getImgUrl = (path) => {
-  };
-const getFullImagePath = (path) => {
-    if (!path) return "/placeholder.jpg";
+const getImgUrl = (path) => {
+   if (!path) return "/placeholder.jpg";
+   return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
+};
+  //  const getImgUrl = (path) => {
+ // };
+//const getFullImagePath = (path) => {
+  ///  if (!path) return "/placeholder.jpg";
     // إذا كان المسار يبدأ بـ http (رابط ImgBB)، استخدمه كما هو ✅
-    if (path.startsWith('https')) return path;
+   // if (path.startsWith('https')) return path;
     // للصور القديمة (التي كانت uploads/)
 
     return path ? `${apiBase}/${path.replace(/\\/g, '/')}` : '/placeholder.jpg';
@@ -160,6 +162,7 @@ const getFullImagePath = (path) => {
 
 
 export default CarDetails;
+
 
 
 
