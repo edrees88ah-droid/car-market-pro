@@ -30,52 +30,33 @@ function App() {
       return (stored && stored !== "undefined") ? JSON.parse(stored) : null;
     } catch (e) { return null; }
   })();
-  // دالة جلب العدادات بشكل موحد ✅
+
   const fetchCounts = useCallback(async () => {
     if (!token || !user) return;
-
     try {
       const headers = { Authorization: `Bearer ${token}` };
-
-      // 1. جلب إشعارات المستخدم (للكل)
       const notifRes = await axios.get(`${API_BASE}/api/notifications/unread-count`, { headers });
       const systemNotifs = parseInt(notifRes.data.count || 0);
 
-      if (user.role === 'admin') {
-        // 2. جلب بيانات الإدارة (للمدير فقط)
+      if (user?.role === 'admin') {
         const adminRes = await axios.get(`${API_BASE}/api/admin/dashboard-data`, { headers });
         const pCount = parseInt(adminRes.data.stats?.pending_count || 0);
-        
         setPendingCount(pCount);
-        // للمدير: الجرس يظهر إشعارات النظام + عدد السيارات المعلقة 🔥
         setUnreadNotifs(systemNotifs + pCount);
       } else {
-        // للمستخدم العادي: الجرس يظهر إشعاراته الشخصية فقط
         setUnreadNotifs(systemNotifs);
       }
-    } catch (err) {
-      console.error("خطأ في تحديث العدادات:", err.message);
-    }
-  };
+    } catch (err) { console.log("Error fetching counts"); }
+  }, [token, user?.role]);
+
   useEffect(() => {
-    // جلب السيارات للمعرض العام
     axios.get(`${API_BASE}/api/cars/all`)
-      .then(res => { 
-        setCars(res.data); 
-        setLoading(false); 
-      })
-      .catch((err) => {
-        console.error("فشل جلب السيارات:", err.message);
-        setLoading(false);
-      });
+      .then(res => { setCars(res.data); setLoading(false); })
+      .catch(() => setLoading(false));
     
-    // جلب العدادات عند التغيير في التوكن
-    if (token) {
-      fetchCounts();
-    }
+    if (token) fetchCounts();
   }, [token, fetchCounts]);
 
-  // دالة تسجيل الخروج
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = '/';
