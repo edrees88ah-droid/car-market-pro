@@ -1,40 +1,20 @@
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Car, Gauge, Calendar, ArrowLeft, CheckCircle2, Eye } from 'lucide-react';
-// في أعلى الملف تحت الـ imports مباشرة
 const CarCard = ({ car }) => {
-  // 1. توحيد القاعدة الأساسية للرابط (بدون ميلة في الآخر لتجنب التكرار)
- const apiBase = `${apiBase}`; 
+  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const isSold = car.status === 'sold';
+ const getCurrencyName = (code) => {
+    const currencies = { 'SDG': 'ج.س', 'SAR': 'ريال', 'EGP': 'ج.م', 'USD': '$', 'AED': 'درهم' };
+    return currencies[code] || code;
+  };
   // 2. معالجة المسار بشكل احترافي
  const getImgUrl = (path) => {
    if (!path) return "/placeholder.jpg";
    return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
 };
-//  const getImageUrl = () => {
-  //  if (!car.main_image) return 'https://via.placeholder.com/400x300?text=No+Image';
-    // تحويل \ الخاصة بالويندوز إلى / وتجنب تكرار الميول
- //  const cleanPath = car.main_image.replace(/\\/g, '/');
-   // return `${apiBase}/${cleanPath}`;
- };
-//const getFullImagePath = (path) => {
- // if (!path) return "/placeholder.jpg";
-  // إذا كان الرابط يبدأ بـ http (يعني قادم من Cloudinary) استعمله كما هو ✅
- // if (path.startsWith('http')) return path;
-//};
-//  const getFullImagePath = (path) => {
-  //  if (!path) return "/placeholder.jpg";
-    // إذا كان الرابط يبدأ بـ http، نعرضه كما هو فوراً ✅
-  //  if (path.startsWith('https')) return path;
-    // للحالات القديمة (إذا كان لسه في صور localhost)
-  //  return `http://localhost:5000/${path.replace(/\\/g, '/')}`;
-//};
-  const getCurrencyName = (code) => {
-    const currencies = { 'SDG': 'ج.س', 'SAR': 'ريال', 'EGP': 'ج.م', 'USD': '$', 'AED': 'درهم' };
-    return currencies[code] || code;
-  };
-
+  
   return (
     <div className={`group bg-white rounded-[2.5rem] shadow-sm overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col ${isSold ? 'opacity-80' : ''}`} dir="rtl">
       
@@ -99,6 +79,7 @@ const CarCard = ({ car }) => {
 
 
 export default CarCard;
+
 
 
 
