@@ -43,22 +43,7 @@ const getImgUrl = (path) => {
    if (!path) return "/placeholder.jpg";
    return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
 };
-      //const getFullImagePath = (path) => {
- // if (!path) return "/placeholder.jpg";
-//  return `${apiBase}/${path.replace(/\\/g, '/')}`;
-//};
- // const getFullImagePath = (path) => {
- // if (!path) return "/placeholder.jpg";
-  // إذا كان الرابط يبدأ بـ http (يعني قادم من Cloudinary) استعمله كما هو ✅
- // if (path.startsWith('http')) return path;
- // };
- // const getFullImagePath = (path) => {
-  //  if (!path) return "/placeholder.jpg";
-    // إذا كان الرابط يبدأ بـ http، نعرضه كما هو فوراً ✅
-   // if (path.startsWith('https')) return path;
-    // للحالات القديمة (إذا كان لسه في صور localhost)
-  //  return `http://localhost:5000/${path.replace(/\\/g, '/')}`;
-//};
+     
     // 3. دالة حذف السيارة
     const handleDelete = async (id) => {
         if (!window.confirm("⚠️ هل أنت متأكد من حذف هذا الإعلان نهائياً؟")) return;
@@ -211,6 +196,7 @@ const getImgUrl = (path) => {
 
 
 export default MyCars;
+
 
 
 
