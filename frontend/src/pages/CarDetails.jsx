@@ -31,17 +31,6 @@ const getImgUrl = (path) => {
    if (!path) return "/placeholder.jpg";
    return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
 };
-  //  const getImgUrl = (path) => {
- // };
-//const getFullImagePath = (path) => {
-  ///  if (!path) return "/placeholder.jpg";
-    // إذا كان المسار يبدأ بـ http (رابط ImgBB)، استخدمه كما هو ✅
-   // if (path.startsWith('https')) return path;
-    // للصور القديمة (التي كانت uploads/)
-
-    return path ? `${apiBase}/${path.replace(/\\/g, '/')}` : '/placeholder.jpg';
-    //return `https://car-backend-api.vercel.app/${path.replace(/\\/g, '/')}`;
-};
   const nextImg = () => setCurrentIndex(prev => (prev === car.images.length - 1 ? 0 : prev + 1));
   const prevImg = () => setCurrentIndex(prev => (prev === 0 ? car.images.length - 1 : prev - 1));
 
@@ -162,6 +151,7 @@ const getImgUrl = (path) => {
 
 
 export default CarDetails;
+
 
 
 
