@@ -11,7 +11,6 @@ const CarDetails = () => {
   const [car, setCar] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const apiBase = `${apiBase}`;
-
   useEffect(() => {
     // جلب تفاصيل السيارة مع كل صورها من المسار الجديد
     axios.get(`${apiBase}/api/cars/detail/${id}`)
@@ -151,6 +150,7 @@ const getImgUrl = (path) => {
 
 
 export default CarDetails;
+
 
 
 
