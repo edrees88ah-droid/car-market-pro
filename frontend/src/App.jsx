@@ -56,8 +56,7 @@ function App() {
     } catch (err) {
       console.error("خطأ في تحديث العدادات:", err.message);
     }
-  }, [token, user?.role]);
-
+  };
   useEffect(() => {
     // جلب السيارات للمعرض العام
     axios.get(`${API_BASE}/api/cars/all`)
