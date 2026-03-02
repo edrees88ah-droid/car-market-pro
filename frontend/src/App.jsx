@@ -29,14 +29,16 @@ function App() {
   //const user = storedUser ? JSON.parse(storedUser) : null;
 
   // محاولة قراءة المستخدم بأمان لمنع الانهيار ✅
- const token = localStorage.getItem('token');
+ // --- احذف السطرين القديمين وضع هذا مكانهما ---
+  const token = localStorage.getItem('token');
   const user = (() => {
     try {
       const stored = localStorage.getItem('user');
       return (stored && stored !== "undefined") ? JSON.parse(stored) : null;
-    } catch (e) { return null; }
+    } catch (e) { 
+      return null; 
+    }
   })();
-
   // دالة جلب العدادات بشكل موحد ✅
   const fetchCounts = useCallback(async () => {
     if (!token || !user) return;
