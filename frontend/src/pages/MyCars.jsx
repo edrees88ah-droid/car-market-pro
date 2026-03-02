@@ -20,6 +20,7 @@ const MyCars = () => {
             });
             setCars(res.data);
         } catch (err) { console.error(err);} finally { setLoading(false);}
+    }
     // 1. جلب البيانات من السيرفر
     const loadData = async () => {
         try {
@@ -210,6 +211,7 @@ const getImgUrl = (path) => {
 
 
 export default MyCars;
+
 
 
 
