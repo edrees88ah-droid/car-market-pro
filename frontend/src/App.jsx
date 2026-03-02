@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Car, ShieldCheck, Bell, LogOut, PlusCircle } from 'lucide-react';
+import * as Icons from 'lucide-react'; // استيراد الأيقونات بطريقة تمنع خطأ الـ Initialization
 
+// استيراد الصفحات
 import Home from './pages/Home.jsx';
 import AddCar from './pages/AddCar.jsx';
 import Login from './pages/Login.jsx';
@@ -21,47 +22,58 @@ function App() {
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [loading, setLoading] = useState(true);
   
+  // 1️⃣ جلب التوكن والبيانات بأمان فائق لمنع الانهيار ✅
   const token = localStorage.getItem('token');
-  
-  // ✅ تعريف المستخدم مرة واحدة فقط وبطريقة آمنة
-  const user = (() => {
+  const user = useMemo(() => {
     try {
       const stored = localStorage.getItem('user');
-      return (stored && stored !== "undefined") ? JSON.parse(stored) : null;
-    } catch (e) { return null; }
-  })();
+      if (!stored || stored === "undefined" || stored === "null") return null;
+      return JSON.parse(stored);
+    } catch (e) {
+      return null;
+    }
+  }, []);
 
   const fetchCounts = useCallback(async () => {
     if (!token || !user) return;
     try {
       const headers = { Authorization: `Bearer ${token}` };
       const notifRes = await axios.get(`${API_BASE}/api/notifications/unread-count`, { headers });
-      const systemNotifs = parseInt(notifRes.data.count || 0);
+      const systemNotifs = parseInt(notifRes.data?.count || 0);
 
       if (user?.role === 'admin') {
         const adminRes = await axios.get(`${API_BASE}/api/admin/dashboard-data`, { headers });
-        const pCount = parseInt(adminRes.data.stats?.pending_count || 0);
+        const pCount = parseInt(adminRes.data?.stats?.pending_count || 0);
         setPendingCount(pCount);
         setUnreadNotifs(systemNotifs + pCount);
       } else {
         setUnreadNotifs(systemNotifs);
       }
-    } catch (err) { console.log("Error fetching counts"); }
-  }, [token, user?.role]);
+    } catch (err) {
+      console.error("Error fetching counters");
+    }
+  }, [token, user]);
 
   useEffect(() => {
+    let isMounted = true;
+    
     axios.get(`${API_BASE}/api/cars/all`)
-      .then(res => { setCars(res.data); setLoading(false); })
-      .catch(() => setLoading(false));
+      .then(res => { 
+        if(isMounted) { setCars(res.data); setLoading(false); }
+      })
+      .catch(() => { 
+        if(isMounted) setLoading(false); 
+      });
     
     if (token) fetchCounts();
+
+    return () => { isMounted = false; };
   }, [token, fetchCounts]);
 
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = '/';
   };
-
   return (
     <div className="min-h-screen bg-gray-50 font-sans selection:bg-blue-100">
       {/* 🧭 شريط التنقل (Navbar) */}
