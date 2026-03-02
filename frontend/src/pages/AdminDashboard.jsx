@@ -43,16 +43,6 @@ const AdminDashboard = () => {
     useEffect(() => { 
         fetchAdminData(); 
     }, []);
-
-  //  const getImgUrl = (path) => {
-      //  if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
-       // return `${apiBase}/${path.replace(/\\/g, '/')}`;
-  //  };
- // 2. دالة تصحيح مسار الصورة
-//const getFullImagePath = (path) => {
- // if (!path) return "/placeholder.jpg";
-//  return `${apiBase}/${path.replace(/\\/g, '/')}`;
-//};
 const getImgUrl = (path) => {
    if (!path) return "/placeholder.jpg";
    return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
@@ -224,6 +214,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
