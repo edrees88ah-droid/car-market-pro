@@ -13,7 +13,7 @@ const UserNotifications = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotifications(res.data);
-            
+    
             // بمجرد فتح الصفحة، نرسل طلب للسيرفر لتعليم الكل كـ "مقروء"
             await axios.patch(`${apiBase}/api/notifications/mark-all-read`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -96,6 +96,7 @@ const UserNotifications = () => {
 
 
 export default UserNotifications;
+
 
 
 
