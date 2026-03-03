@@ -9,11 +9,13 @@ const CarCard = ({ car }) => {
     const currencies = { 'SDG': 'ج.س', 'SAR': 'ريال', 'EGP': 'ج.م', 'USD': '$', 'AED': 'درهم' };
     return currencies[code] || code;
   };
-  // 2. معالجة المسار بشكل احترافي
- const getImgUrl = (path) => {
-   if (!path) return "/placeholder.jpg";
-   return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
-};
+  // 2️⃣ دالة تصحيح مسار الصورة
+    const getFullImagePath = (path) => {
+        if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
+        if (path.startsWith('http')) return path; // روابط ImgBB السحابية
+        return `${API_BASE}/${path.replace(/\\/g, '/')}`; // الروابط المحلية القديمة
+    };
+  
   
   return (
     <div className={`group bg-white rounded-[2.5rem] shadow-sm overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col ${isSold ? 'opacity-80' : ''}`} dir="rtl">
@@ -79,6 +81,7 @@ const CarCard = ({ car }) => {
 
 
 export default CarCard;
+
 
 
 
