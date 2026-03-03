@@ -43,10 +43,12 @@ const AdminDashboard = () => {
     useEffect(() => { 
         fetchAdminData(); 
     }, []);
-const getImgUrl = (path) => {
-   if (!path) return "/placeholder.jpg";
-   return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
-};
+  / 2️⃣ دالة تصحيح مسار الصورة
+    const getFullImagePath = (path) => {
+        if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
+        if (path.startsWith('http')) return path; // روابط ImgBB السحابية
+        return `${API_BASE}/${path.replace(/\\/g, '/')}`; // الروابط المحلية القديمة
+    };
   
     const handleStatusUpdate = async (id, status) => {
         const action = status === 'active' ? "قبول ونشر" : "رفض";
@@ -214,6 +216,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
