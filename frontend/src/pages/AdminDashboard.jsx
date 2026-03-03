@@ -1,4 +1,3 @@
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -6,6 +5,8 @@ import {
   ShieldCheck, Clock, Coins, Check, X, Eye, 
   Phone, User, Car, Loader2, AlertCircle, TrendingUp 
 } from 'lucide-react';
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const AdminDashboard = () => {
     // 1. تهيئة البيانات بقيم افتراضية لمنع الشاشة البيضاء
     const [data, setData] = useState({ 
@@ -43,7 +44,7 @@ const AdminDashboard = () => {
     useEffect(() => { 
         fetchAdminData(); 
     }, []);
-  / 2️⃣ دالة تصحيح مسار الصورة
+  // 2️⃣ دالة تصحيح مسار الصورة
     const getFullImagePath = (path) => {
         if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
         if (path.startsWith('http')) return path; // روابط ImgBB السحابية
@@ -216,6 +217,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
