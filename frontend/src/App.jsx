@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { Car, ShieldCheck, Bell, LogOut, PlusCircle } from 'lucide-react';
 
-// استيراد الصفحات
 import Home from './pages/Home.jsx';
 import AddCar from './pages/AddCar.jsx';
 import Login from './pages/Login.jsx';
@@ -21,19 +20,18 @@ function App() {
   const [pendingCount, setPendingCount] = useState(0);
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [loading, setLoading] = useState(true);
-  
-  // قراءة المستخدم بأمان فائق ✅
   const [user, setUser] = useState(null);
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState(null);
 
+  // قراءة البيانات من المتصفح بأمان بعد التحميل ✅
   useEffect(() => {
-    const stored = localStorage.getItem('user');
-    if (stored && stored !== "undefined" && stored !== "null") {
+    const t = localStorage.getItem('token');
+    const u = localStorage.getItem('user');
+    if (t) setToken(t);
+    if (u && u !== "undefined") {
       try {
-        setUser(JSON.parse(stored));
-      } catch (e) {
-        console.error("User data error");
-      }
+        setUser(JSON.parse(u));
+      } catch (e) { console.error("User parse fail"); }
     }
   }, []);
 
@@ -63,38 +61,33 @@ function App() {
     if (token && user) fetchCounts();
   }, [token, user, fetchCounts]);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = '/';
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 font-sans" dir="rtl">
-      <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-[1000] border-b border-gray-100 px-6 py-4">
+    <div className="min-h-screen bg-gray-50 font-sans" dir="rtl text-right">
+      <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-[1000] border-b px-4 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link to="/" className="text-2xl font-black text-blue-700 flex items-center gap-2 italic">
+          <Link to="/" className="text-2xl font-black text-blue-700 italic flex items-center gap-2">
             <Car size={32} /> سوق سياراتي
           </Link>
           
           <div className="flex items-center gap-4">
             {token && user ? (
               <div className="flex items-center gap-3">
-                {user.role === 'admin' && (
+                {user?.role === 'admin' && (
                   <Link to="/admin" className="relative p-2.5 text-orange-600 bg-orange-50 rounded-2xl transition-all">
                     <ShieldCheck size={20} />
                     {pendingCount > 0 && <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold">{pendingCount}</span>}
                   </Link>
                 )}
-                <Link to="/notifications" className="relative p-2.5 text-blue-600 bg-blue-50 rounded-2xl transition-all">
+                <Link to="/notifications" className="relative p-2.5 text-blue-600 bg-blue-50 rounded-2xl">
                   <Bell size={20} />
                   {unreadNotifs > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold">{unreadNotifs}</span>}
                 </Link>
-                <button onClick={handleLogout} className="text-red-500 font-bold text-sm bg-red-50 px-3 py-1.5 rounded-xl transition-all hover:bg-red-500 hover:text-white">خروج</button>
+                <button onClick={() => { localStorage.clear(); window.location.href='/'; }} className="text-red-500 font-bold text-sm bg-red-50 px-3 py-1.5 rounded-xl">خروج</button>
               </div>
             ) : (
               <Link to="/login" className="font-bold text-gray-600 text-sm">دخول</Link>
             )}
-            <Link to="/add-car" className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl font-black shadow-xl hover:bg-blue-700 text-xs transition-all">+ بيع سيارتك</Link>
+            <Link to="/add-car" className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl font-black shadow-xl text-xs">+ بيع سيارتك</Link>
           </div>
         </div>
       </nav>
