@@ -1,8 +1,9 @@
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Save, ArrowRight, Loader2 } from 'lucide-react';
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const EditCar = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -74,6 +75,7 @@ const EditCar = () => {
 
 
 export default EditCar;
+
 
 
 
