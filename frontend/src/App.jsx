@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import * as Icons from 'lucide-react'; // استيراد الأيقونات بطريقة تمنع خطأ الـ Initialization
-
 // استيراد الصفحات
 import Home from './pages/Home.jsx';
 import AddCar from './pages/AddCar.jsx';
