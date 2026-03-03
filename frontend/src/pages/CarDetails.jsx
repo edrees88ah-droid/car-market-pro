@@ -1,4 +1,3 @@
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -6,6 +5,8 @@ import {
   MessageCircle, Phone, Calendar, Gauge, 
   ArrowRight, ArrowLeft, User, Eye, MapPin 
 } from 'lucide-react';
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const CarDetails = () => {
   const { id } = useParams();
   const [car, setCar] = useState(null);
@@ -25,11 +26,12 @@ const CarDetails = () => {
       جاري تحميل معرض السيارة... ✨
     </div>
   );
-// دالة تصحيح مسار الصورة (تحويل ميول الويندوز)
-const getImgUrl = (path) => {
-   if (!path) return "/placeholder.jpg";
-   return path.startsWith('http') ? path : `${API_BASE}/${path.replace(/\\/g, '/')}`;
-};
+    // 2️⃣ دالة تصحيح مسار الصورة
+    const getFullImagePath = (path) => {
+        if (!path) return "https://via.placeholder.com/400x300?text=No+Image";
+        if (path.startsWith('http')) return path; // روابط ImgBB السحابية
+        return `${API_BASE}/${path.replace(/\\/g, '/')}`; // الروابط المحلية القديمة
+    };
   const nextImg = () => setCurrentIndex(prev => (prev === car.images.length - 1 ? 0 : prev + 1));
   const prevImg = () => setCurrentIndex(prev => (prev === 0 ? car.images.length - 1 : prev - 1));
 
@@ -150,6 +152,7 @@ const getImgUrl = (path) => {
 
 
 export default CarDetails;
+
 
 
 
