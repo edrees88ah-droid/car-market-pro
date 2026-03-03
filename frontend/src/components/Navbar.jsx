@@ -6,7 +6,6 @@ import {
   User, PlusCircle, LayoutGrid, Menu, X 
 } from 'lucide-react';
 const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 const Navbar = () => {
     const navigate = useNavigate();
     const [unreadCount, setUnreadCount] = useState(0);
@@ -137,6 +136,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
 
 
