@@ -6,7 +6,6 @@ import {
   Phone, User, Car, Loader2, AlertCircle, TrendingUp 
 } from 'lucide-react';
 const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 const AdminDashboard = () => {
     // 1. تهيئة البيانات بقيم افتراضية لمنع الشاشة البيضاء
     const [data, setData] = useState({ 
@@ -217,6 +216,7 @@ const StatCard = ({ title, value, icon, color, label, badge }) => (
 
 
 export default AdminDashboard;
+
 
 
 
