@@ -6,7 +6,6 @@ import {
   ArrowRight, ArrowLeft, User, Eye, MapPin 
 } from 'lucide-react';
 const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 const CarDetails = () => {
   const { id } = useParams();
   const [car, setCar] = useState(null);
@@ -152,6 +151,7 @@ const CarDetails = () => {
 
 
 export default CarDetails;
+
 
 
 
