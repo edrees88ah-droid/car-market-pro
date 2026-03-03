@@ -1,5 +1,3 @@
-// في أعلى الملف تحت الـ importsمباشرة
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +5,8 @@ import {
   Car, Bell, ShieldCheck, LogOut, 
   User, PlusCircle, LayoutGrid, Menu, X 
 } from 'lucide-react';
+const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const Navbar = () => {
     const navigate = useNavigate();
     const [unreadCount, setUnreadCount] = useState(0);
@@ -137,6 +137,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
 
 
