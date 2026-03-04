@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Car, ShieldCheck, Bell, LogOut, PlusCircle } from 'lucide-react';
+import { Car, ShieldCheck, Bell, LogOut, PlusCircle, Loader2 } from 'lucide-react';
 
+// استيراد الصفحات (تأكد أن الملفات موجودة فعلاً في مجلد pages)
 import Home from './pages/Home.jsx';
 import AddCar from './pages/AddCar.jsx';
 import Login from './pages/Login.jsx';
@@ -21,17 +22,17 @@ function App() {
   const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
-  // قراءة البيانات من المتصفح بأمان بعد التحميل ✅
+  // 1️⃣ استخراج بيانات المستخدم بأمان بعد تحميل المكون
   useEffect(() => {
-    const t = localStorage.getItem('token');
-    const u = localStorage.getItem('user');
-    if (t) setToken(t);
-    if (u && u !== "undefined") {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser && storedUser !== "undefined" && storedUser !== "null") {
       try {
-        setUser(JSON.parse(u));
-      } catch (e) { console.error("User parse fail"); }
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem('user');
+      }
     }
   }, []);
 
@@ -50,19 +51,28 @@ function App() {
       } else {
         setUnreadNotifs(systemNotifs);
       }
-    } catch (err) { /* منع الانهيار */ }
+    } catch (err) {
+      console.log("Counters fetch failed");
+    }
   }, [token, user]);
 
   useEffect(() => {
     axios.get(`${API_BASE}/api/cars/all`)
       .then(res => { setCars(res.data || []); })
+      .catch((err) => console.log("Cars fetch failed"))
       .finally(() => setLoading(false));
     
     if (token && user) fetchCounts();
   }, [token, user, fetchCounts]);
 
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/';
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 font-sans" dir="rtl text-right">
+    <div className="min-h-screen bg-gray-50 font-sans" dir="rtl">
+      {/* 🧭 Navbar */}
       <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-[1000] border-b px-4 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-black text-blue-700 italic flex items-center gap-2">
@@ -82,7 +92,7 @@ function App() {
                   <Bell size={20} />
                   {unreadNotifs > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold">{unreadNotifs}</span>}
                 </Link>
-                <button onClick={() => { localStorage.clear(); window.location.href='/'; }} className="text-red-500 font-bold text-sm bg-red-50 px-3 py-1.5 rounded-xl">خروج</button>
+                <button onClick={handleLogout} className="text-red-500 font-bold text-sm bg-red-50 px-3 py-1.5 rounded-xl transition-all">خروج</button>
               </div>
             ) : (
               <Link to="/login" className="font-bold text-gray-600 text-sm">دخول</Link>
@@ -92,6 +102,7 @@ function App() {
         </div>
       </nav>
 
+      {/* 🛣️ Routes */}
       <Routes>
         <Route path="/" element={<Home cars={cars} loading={loading} />} />
         <Route path="/login" element={<Login />} />
