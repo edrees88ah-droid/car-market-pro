@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { Car, ShieldCheck, Bell, LogOut, PlusCircle } from 'lucide-react';
 
-import Home from './pages/Home.jsx';
+//import Home from './pages/Home.jsx';
 import AddCar from './pages/AddCar.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
